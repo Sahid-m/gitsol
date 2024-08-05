@@ -13,10 +13,10 @@ export default function Home() {
       {!session.data ?
         <button onClick={() => signIn()} className="p-4 bg-black text-white">
           Sign In
-        </button> : ""}
-      <button onClick={() => signOut()} className="p-4 bg-black text-white">
-        Sign Out
-      </button>
+        </button> : <button onClick={() => signOut()} className="p-4 bg-black text-white">
+          Sign Out
+        </button>}
+
     </div>
   );
 }

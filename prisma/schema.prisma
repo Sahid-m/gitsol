@@ -1,0 +1,51 @@
+// This is your Prisma schema file,
+// learn more about it in the docs: https://pris.ly/d/prisma-schema
+
+// Looking for ways to speed up your queries, or scale easily with your serverless or edge functions?
+// Try Prisma Accelerate: https://pris.ly/cli/accelerate-init
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+model User {
+  id          String     @id @default(uuid())
+  providor_id String     @unique
+  username    String     @unique
+  name        String?
+  profileImg  String?
+  solWalletId String?    @unique
+  solWallet   SolWallet?
+  bountyId    String?
+  bounties    Bounties[]
+}
+
+model SolWallet {
+  id         String @id @default(uuid())
+  publicKey  String
+  privateKey String
+  userid     String @unique
+  user       User   @relation(fields: [userid], references: [id])
+}
+
+model Bounties {
+  id           String        @id @default(uuid())
+  ownerId      String
+  owner        User          @relation(fields: [ownerId], references: [id])
+  issueNumber  String
+  githubRepo   String
+  contributors Contributor[]
+}
+
+model Contributor {
+  id           String   @id @default(uuid())
+  email        String
+  solPublicKey String
+  bountyId     String
+  bounty       Bounties @relation(fields: [bountyId], references: [id])
+}
