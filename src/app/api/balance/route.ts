@@ -1,19 +1,24 @@
-import { getServerSession } from "next-auth";
-import { NextRequest } from "next/server";
-import db from "../../../db";
-import { authConfig } from "../../../lib/authconfig";
+import { getSolBalanaceInUSD } from "@/lib/solutils";
+import {
+  clusterApiUrl,
+  Connection,
+  LAMPORTS_PER_SOL,
+  PublicKey,
+} from "@solana/web3.js";
+import { NextRequest, NextResponse } from "next/server";
 
 export async function GET(req: NextRequest) {
   const { searchParams } = new URL(req.url);
-  const userPublicKey = searchParams.get("publicKey");
+  const userPublicKey = searchParams.get("publicKey") as unknown as string;
 
-  const data = await getServerSession(authConfig);
+  const userBal = await getSolBalanaceInUSD(userPublicKey);
 
-  const user_wallet = db.solWallet.findFirst({
-    where: {
-      userid: data?.user.uid,
+  return NextResponse.json(
+    {
+      bal: userBal,
     },
-  });
+    {
+      status: 200,
+    }
+  );
 }
-
-function getSolanaBalance(publicKey: string) {}

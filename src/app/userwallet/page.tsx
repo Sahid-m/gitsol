@@ -7,6 +7,8 @@ import React from 'react';
 
 export default async function Wallet() {
 
+
+
     const data = await getServerSession(authConfig);
 
     if (!data?.user || !data) {
@@ -22,7 +24,7 @@ export default async function Wallet() {
     return (
         <div className='h-screen flex justify-center items-center'>
             <div className=''>
-                <Card primaryKey={await getUserWallet(data.user.uid) ?? ""} bal='0.00' img={data?.user?.image} name={data?.user?.name ?? ''} />
+                <Card primaryKey={await getUserWallet(data.user.uid) ?? ""} img={data?.user?.image} name={data?.user?.name ?? ''} />
             </div>
 
         </div>

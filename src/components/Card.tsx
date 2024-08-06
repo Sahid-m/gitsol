@@ -1,11 +1,13 @@
 'use client'
 
+import { getSolBalanaceInUSD } from '@/lib/solutils';
 import React, { useEffect, useState } from 'react';
 import PrimaryButton from './Button';
 
-export default function Card({ name, img, bal, primaryKey }: { name: string; img: string; bal: string; primaryKey: string }) {
+export default function Card({ name, img, primaryKey }: { name: string; img: string; primaryKey: string }) {
 
     const [copied, setCopied] = useState(false);
+    const [bal, setBal] = useState(0.00);
 
     useEffect(() => {
 
@@ -17,13 +19,24 @@ export default function Card({ name, img, bal, primaryKey }: { name: string; img
             clearTimeout(copied)
         }
     }, [copied])
+
+    useEffect(() => {
+        async function fetchBal() {
+            const bal = await getSolBalanaceInUSD(primaryKey);
+            // You can set the balance to a state or perform other actions with it here
+            setBal(bal);
+        }
+
+        fetchBal();
+    }, [primaryKey]);
+
     return (
         <>
             <div className="max-w-lg mx-auto bg-white shadow-lg rounded-lg overflow-hidden">
                 <div className="px-6 py-4">
                     {AccountInfo()}
                     <div className="mt-6 flex justify-between items-center">
-                        <div className="text-3xl font-bold text-gray-900">${bal} <span className="text-lg font-medium text-gray-500">USD</span></div>
+                        <div className="text-3xl font-bold text-gray-900">${bal.toFixed(2)} <span className="text-lg font-medium text-gray-500">USD</span></div>
                         <PrimaryButton className='!text-sm' onClick={() => {
                             navigator.clipboard.writeText(primaryKey);
                             setCopied(true);
