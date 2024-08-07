@@ -1,11 +1,15 @@
 "use client";
 
-import { getSolBalanaceInUSD } from "@/lib/solutils";
-import { useWallet } from "@solana/wallet-adapter-react";
+import { getSolBalanaceInUSD, addFunds } from "@/lib/solutils";
+import { useConnection, useWallet } from "@solana/wallet-adapter-react";
 import { WalletMultiButton } from "@solana/wallet-adapter-react-ui";
 import React, { useEffect, useState } from "react";
 import Image from "next/image";
 import { Button } from "./ui/button";
+import { Popover, PopoverTrigger, PopoverContent } from "./ui/popover";
+import * as web3 from "@solana/web3.js";
+import { useToast } from "@/components/ui/use-toast";
+import { ToastAction } from "./ui/toast";
 
 export default function Card({
   name,
@@ -16,8 +20,15 @@ export default function Card({
   img: string;
   primaryKey: string;
 }) {
+  const { toast } = useToast();
   const [copied, setCopied] = useState(false);
   const [bal, setBal] = useState(0.0);
+  const [amount, setAmount] = useState("");
+  const [txSig, setTxSig] = useState("");
+  const [isAdding, setIsAdding] = useState(false);
+  const { connection } = useConnection();
+  const { publicKey, sendTransaction } = useWallet();
+  const [isPopoverOpen, setIsPopoverOpen] = useState(false);
 
   useEffect(() => {
     const copied = setTimeout(() => {
@@ -39,6 +50,72 @@ export default function Card({
     fetchBal();
   }, [primaryKey]);
 
+  const handleTransaction = async () => {
+    if (!connection || !publicKey) {
+      toast({
+        title: "Error",
+        description: "Please connect your wallet first!",
+        variant: "destructive",
+      });
+      return;
+    }
+
+    setIsAdding(true);
+
+    try {
+      const signature = await addFunds(
+        publicKey,
+        new web3.PublicKey(primaryKey),
+        parseFloat(amount),
+        sendTransaction
+      );
+      setTxSig(signature);
+
+      const newBalance = await getSolBalanaceInUSD(primaryKey);
+      setBal(newBalance);
+
+      toast({
+        title: "Success",
+        description: "Transaction completed successfully.",
+        action: (
+          <ToastAction
+            altText="View Transaction"
+            onClick={() =>
+              window.open(
+                `https://explorer.solana.com/tx/${signature}?cluster=devnet`,
+                "_blank"
+              )
+            }
+          >
+            View Transaction
+          </ToastAction>
+        ),
+      });
+
+      // Close the popover after successful transaction
+      setIsPopoverOpen(false);
+    } catch (error) {
+      console.error("Transaction Error:", error);
+      if (error instanceof web3.SendTransactionError) {
+        console.error("SendTransactionError:", (error as any).error);
+        toast({
+          title: "Error",
+          description: (error as any).error.message,
+          variant: "destructive",
+        });
+      } else {
+        toast({
+          title: "Error",
+          description: "Transaction failed!",
+          variant: "destructive",
+        });
+      }
+    } finally {
+      setAmount("");
+      setIsAdding(false);
+    }
+  };
+
   return (
     <>
       <div className="max-w-lg mx-auto bg-white shadow-lg rounded-lg overflow-hidden">
@@ -59,6 +136,31 @@ export default function Card({
               {copied ? "Copied!" : "Your Wallet Address"}
             </Button>
           </div>
+          <Popover open={isPopoverOpen} onOpenChange={setIsPopoverOpen}>
+            <PopoverTrigger asChild>
+              <Button className="!text-sm">Add Funds</Button>
+            </PopoverTrigger>
+            <PopoverContent>
+              <div className="p-4">
+                <input
+                  type="number"
+                  id="amount"
+                  value={amount}
+                  onChange={(e) => setAmount(e.target.value)}
+                  placeholder="Enter amount of SOL"
+                  className="mb-4 p-2 border rounded"
+                />
+                <WalletMultiButton />
+                <Button
+                  className="!text-sm mt-2"
+                  onClick={handleTransaction}
+                  disabled={isAdding}
+                >
+                  {isAdding ? "Adding..." : "Add"}
+                </Button>
+              </div>
+            </PopoverContent>
+          </Popover>
         </div>
       </div>
       <div className="max-w-lg bg-slate-50 mx-auto shadow-lg">
