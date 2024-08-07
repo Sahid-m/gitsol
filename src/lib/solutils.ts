@@ -3,11 +3,12 @@ import {
   Connection,
   LAMPORTS_PER_SOL,
   PublicKey,
-  Keypair,
   SystemProgram,
   Transaction,
   sendAndConfirmTransaction,
 } from "@solana/web3.js";
+
+export const connection = new Connection(clusterApiUrl("devnet"), "confirmed");
 
 export async function getSolBalanaceInUSD(publicKey: string): Promise<number> {
   let wallet = new PublicKey(publicKey);
@@ -30,4 +31,30 @@ export async function getSolBalanaceInUSD(publicKey: string): Promise<number> {
   return userBal;
 }
 
-export const connection = new Connection(clusterApiUrl("devnet"), "confirmed");
+export async function addFunds(
+  fromPublicKey: PublicKey,
+  toPublicKey: PublicKey,
+  amount: number,
+  sendTransaction: (
+    transaction: Transaction,
+    connection: Connection
+  ) => Promise<string>
+): Promise<string> {
+  const transaction = new Transaction();
+  const instruction = SystemProgram.transfer({
+    fromPubkey: fromPublicKey,
+    lamports: amount * LAMPORTS_PER_SOL,
+    toPubkey: toPublicKey,
+  });
+
+  transaction.add(instruction);
+
+  try {
+    const signature = await sendTransaction(transaction, connection);
+    return signature;
+  } catch (error) {
+    console.error("Transaction Error:", error);
+
+    throw new Error("Transaction failed!");
+  }
+}
