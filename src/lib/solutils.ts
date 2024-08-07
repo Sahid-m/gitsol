@@ -3,6 +3,10 @@ import {
   Connection,
   LAMPORTS_PER_SOL,
   PublicKey,
+  Keypair,
+  SystemProgram,
+  Transaction,
+  sendAndConfirmTransaction,
 } from "@solana/web3.js";
 
 export async function getSolBalanaceInUSD(publicKey: string): Promise<number> {
@@ -10,16 +14,16 @@ export async function getSolBalanaceInUSD(publicKey: string): Promise<number> {
 
   const userSol = (await connection.getBalance(wallet)) / LAMPORTS_PER_SOL;
 
-  const responce = await fetch("https://price.jup.ag/v6/price?ids=SOL", {
+  const response = await fetch("https://price.jup.ag/v6/price?ids=SOL", {
     method: "GET",
   });
 
-  const data = await responce.json();
+  const data = await response.json();
 
   console.log(data);
   console.log(data.data.SOL);
 
-  const currentPrice = data.data.SOL.price;
+  const currentPrice = data.data?.SOL?.price ?? 0;
 
   const userBal = userSol * currentPrice;
 
