@@ -4,8 +4,8 @@ import { getSolBalanaceInUSD } from "@/lib/solutils";
 import { useWallet } from "@solana/wallet-adapter-react";
 import { WalletMultiButton } from "@solana/wallet-adapter-react-ui";
 import React, { useEffect, useState } from "react";
-import PrimaryButton from "./Button";
 import Image from "next/image";
+import { Button } from "./ui/button";
 
 export default function Card({
   name,
@@ -49,7 +49,7 @@ export default function Card({
               ${bal.toFixed(2)}{" "}
               <span className="text-lg font-medium text-gray-500">USD</span>
             </div>
-            <PrimaryButton
+            <Button
               className="!text-sm"
               onClick={() => {
                 navigator.clipboard.writeText(primaryKey);
@@ -57,7 +57,7 @@ export default function Card({
               }}
             >
               {copied ? "Copied!" : "Your Wallet Address"}
-            </PrimaryButton>
+            </Button>
           </div>
         </div>
       </div>
