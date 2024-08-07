@@ -7,7 +7,6 @@
 .yarn/install-state.gz
 
 
-.env
 
 # testing
 /coverage
@@ -19,7 +18,7 @@
 # production
 /build
 
-.env
+
 .env.example
 .env.local
 .env.staging
@@ -27,7 +26,6 @@
 # misc
 .DS_Store
 *.pem
-.env
 
 # debug
 npm-debug.log*
@@ -35,7 +33,6 @@ yarn-debug.log*
 yarn-error.log*
 
 # local env files
-.env*.local
 
 # vercel
 .vercel
