@@ -27,21 +27,22 @@ export const authConfig = {
     session: ({ session, token }: any): ext_session => {
       const newSession: ext_session = session as ext_session;
       if (newSession.user && token.uid) {
-        //@ts-ignore
         newSession.user.uid = token.uid;
       }
+
       return newSession;
     },
     async jwt({ token, account, profile }: any) {
       const user = await db.user.findFirst({
         where: {
-          providor_id: account?.providerAccountId,
+          sub: token.sub,
         },
       });
 
       if (user) {
         token.uid = user.id;
       }
+
       return token;
     },
 
@@ -65,7 +66,7 @@ export const authConfig = {
       await db.user.create({
         data: {
           username: userEmail,
-          providor_id: account?.providerAccountId ?? "",
+          sub: account.providerAccountId ?? "",
           name: user.name,
           profileImg: user.image,
           solWallet: {

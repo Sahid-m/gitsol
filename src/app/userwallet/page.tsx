@@ -5,6 +5,7 @@ import { authConfig } from '@/lib/authconfig';
 import { getServerSession } from 'next-auth';
 import React from 'react';
 
+
 export default async function Wallet() {
 
 
@@ -41,7 +42,6 @@ async function getUserWallet(uid: string) {
             publicKey: true
         }
     })
-
     return data?.publicKey;
 
 }

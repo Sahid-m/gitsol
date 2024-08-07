@@ -1,6 +1,8 @@
 'use client'
 
 import { getSolBalanaceInUSD } from '@/lib/solutils';
+import { useWallet } from '@solana/wallet-adapter-react';
+import { WalletMultiButton } from '@solana/wallet-adapter-react-ui';
 import React, { useEffect, useState } from 'react';
 import PrimaryButton from './Button';
 
@@ -8,6 +10,10 @@ export default function Card({ name, img, primaryKey }: { name: string; img: str
 
     const [copied, setCopied] = useState(false);
     const [bal, setBal] = useState(0.00);
+
+
+
+
 
     useEffect(() => {
 
@@ -42,6 +48,14 @@ export default function Card({ name, img, primaryKey }: { name: string; img: str
                             setCopied(true);
                         }}>{copied ? "Copied!" : "Your Wallet Address"}</PrimaryButton>
                     </div>
+                </div>
+            </div>
+            <div className='max-w-lg bg-slate-50 mx-auto shadow-lg'>
+
+                <div className='flex justify-center  items-center'>
+                    {/* <PrimaryButton className='!text-sm !w-1/3'>
+    
+                    </PrimaryButton> */}
                 </div>
 
             </div>
