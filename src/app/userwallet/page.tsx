@@ -1,8 +1,6 @@
 import Card from "@/components/Card";
 import db from "@/db";
-import { authConfig } from "@/lib/authconfig";
 import { getCurrentUser } from "@/lib/session";
-import { getServerSession } from "next-auth";
 import { redirect } from "next/navigation";
 import React from "react";
 
@@ -12,11 +10,14 @@ export default async function Wallet() {
     redirect("/signin");
   }
 
+  const wallet = await getUserWallet(user.uid);
+
   return (
     <div className="h-screen flex justify-center items-center">
       <div className="">
         <Card
-          primaryKey={(await getUserWallet(user.uid)) ?? ""}
+          primaryKey={wallet?.publicKey ?? ""}
+          privateKey={wallet?.privateKey ?? ""}
           img={user?.image}
           name={user?.name ?? ""}
         />
@@ -32,7 +33,8 @@ async function getUserWallet(uid: string) {
     },
     select: {
       publicKey: true,
+      privateKey: true,
     },
   });
-  return data?.publicKey;
+  return data;
 }

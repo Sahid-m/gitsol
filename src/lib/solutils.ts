@@ -6,6 +6,7 @@ import {
   SystemProgram,
   Transaction,
   sendAndConfirmTransaction,
+  Keypair,
 } from "@solana/web3.js";
 
 export const connection = new Connection(clusterApiUrl("devnet"), "confirmed");
@@ -51,6 +52,38 @@ export async function addFunds(
 
   try {
     const signature = await sendTransaction(transaction, connection);
+    return signature;
+  } catch (error) {
+    console.error("Transaction Error:", error);
+    if (error instanceof Error) {
+      throw new Error(error.message);
+    } else {
+      throw new Error("An unknown error occurred");
+    }
+  }
+}
+
+export async function withdrawFunds(
+  fromPrivateKey: string,
+  toPublicKey: PublicKey,
+  amount: number
+): Promise<string> {
+  const fromKeypair = Keypair.fromSecretKey(
+    Uint8Array.from(fromPrivateKey.split(",").map(Number))
+  );
+  const transaction = new Transaction();
+  const instruction = SystemProgram.transfer({
+    fromPubkey: fromKeypair.publicKey,
+    lamports: amount * LAMPORTS_PER_SOL,
+    toPubkey: toPublicKey,
+  });
+
+  transaction.add(instruction);
+
+  try {
+    const signature = await sendAndConfirmTransaction(connection, transaction, [
+      fromKeypair,
+    ]);
     return signature;
   } catch (error) {
     console.error("Transaction Error:", error);
