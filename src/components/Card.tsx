@@ -1,24 +1,27 @@
 "use client";
 
-import { getSolBalanaceInUSD, addFunds } from "@/lib/solutils";
+import { getSolBalanaceInUSD, addFunds, withdrawFunds } from "@/lib/solutils";
 import { useConnection, useWallet } from "@solana/wallet-adapter-react";
 import { WalletMultiButton } from "@solana/wallet-adapter-react-ui";
 import React, { useEffect, useState } from "react";
 import Image from "next/image";
 import { Button } from "./ui/button";
-import { Popover, PopoverTrigger, PopoverContent } from "./ui/popover";
+import { Dialog, DialogTrigger, DialogContent } from "./ui/dialog";
 import * as web3 from "@solana/web3.js";
 import { useToast } from "@/components/ui/use-toast";
 import { ToastAction } from "./ui/toast";
+import { Input } from "./ui/input";
 
 export default function Card({
   name,
   img,
   primaryKey,
+  privateKey,
 }: {
   name: string;
   img: string;
   primaryKey: string;
+  privateKey: string;
 }) {
   const { toast } = useToast();
   const [copied, setCopied] = useState(false);
@@ -26,10 +29,12 @@ export default function Card({
   const [amount, setAmount] = useState("");
   const [txSig, setTxSig] = useState("");
   const [isAdding, setIsAdding] = useState(false);
+  const [isWithdrawing, setIsWithdrawing] = useState(false);
   const { connection } = useConnection();
   const { publicKey, sendTransaction } = useWallet();
-  const [isPopoverOpen, setIsPopoverOpen] = useState(false);
+  const [isDialogOpen, setIsDialogOpen] = useState(false);
   const [walletBalance, setWalletBalance] = useState(0.0);
+  const [internalWalletBalance, setInternalWalletBalance] = useState(0.0);
 
   useEffect(() => {
     const copied = setTimeout(() => {
@@ -44,7 +49,6 @@ export default function Card({
   useEffect(() => {
     async function fetchBal() {
       const bal = await getSolBalanaceInUSD(primaryKey);
-      // You can set the balance to a state or perform other actions with it here
       setBal(bal);
     }
 
@@ -57,12 +61,18 @@ export default function Card({
         const balance = await connection.getBalance(publicKey);
         setWalletBalance(balance / web3.LAMPORTS_PER_SOL);
       }
+      if (primaryKey) {
+        const balance = await connection.getBalance(
+          new web3.PublicKey(primaryKey)
+        );
+        setInternalWalletBalance(balance / web3.LAMPORTS_PER_SOL);
+      }
     }
 
     fetchWalletBalance();
-  }, [publicKey, connection]);
+  }, [publicKey, primaryKey, connection]);
 
-  const handleTransaction = async () => {
+  const handleTransaction = async (isAddingFunds: boolean) => {
     if (!connection || !publicKey) {
       toast({
         title: "Error",
@@ -82,7 +92,7 @@ export default function Card({
       return;
     }
 
-    if (amountInSol > walletBalance) {
+    if (isAddingFunds && amountInSol > walletBalance) {
       toast({
         title: "Error",
         description: "Insufficient balance in your wallet!",
@@ -91,15 +101,27 @@ export default function Card({
       return;
     }
 
-    setIsAdding(true);
+    if (!isAddingFunds && amountInSol > internalWalletBalance) {
+      toast({
+        title: "Error",
+        description: "Insufficient balance in the account!",
+        variant: "destructive",
+      });
+      return;
+    }
+
+    isAddingFunds ? setIsAdding(true) : setIsWithdrawing(true);
 
     try {
-      const signature = await addFunds(
-        publicKey,
-        new web3.PublicKey(primaryKey),
-        amountInSol,
-        sendTransaction
-      );
+      const signature = isAddingFunds
+        ? await addFunds(
+            publicKey,
+            new web3.PublicKey(primaryKey),
+            amountInSol,
+            sendTransaction
+          )
+        : await withdrawFunds(privateKey, publicKey, amountInSol);
+
       setTxSig(signature);
 
       const newBalance = await getSolBalanaceInUSD(primaryKey);
@@ -107,7 +129,9 @@ export default function Card({
 
       toast({
         title: "Success",
-        description: "Transaction completed successfully.",
+        description: `${
+          isAddingFunds ? "Transaction" : "Withdrawal"
+        } completed successfully.`,
         action: (
           <ToastAction
             altText="View Transaction"
@@ -123,8 +147,7 @@ export default function Card({
         ),
       });
 
-      // Close the popover after successful transaction
-      setIsPopoverOpen(false);
+      setIsDialogOpen(false);
     } catch (error) {
       console.error("Transaction Error:", error);
       if (error instanceof web3.SendTransactionError) {
@@ -143,14 +166,15 @@ export default function Card({
       }
     } finally {
       setAmount("");
-      setIsAdding(false);
+      isAddingFunds ? setIsAdding(false) : setIsWithdrawing(false);
     }
   };
 
   return (
     <>
       <div className="max-w-lg mx-auto bg-white shadow-lg rounded-lg overflow-hidden">
-        <div className="px-6 py-4">
+        <WalletMultiButton />
+        <div className="px-6 py-4 flex flex-col">
           {AccountInfo()}
           <div className="mt-6 flex justify-between items-center">
             <div className="text-3xl font-bold text-gray-900">
@@ -167,31 +191,38 @@ export default function Card({
               {copied ? "Copied!" : "Your Wallet Address"}
             </Button>
           </div>
-          <Popover open={isPopoverOpen} onOpenChange={setIsPopoverOpen}>
-            <PopoverTrigger asChild>
-              <Button className="!text-sm">Add Funds</Button>
-            </PopoverTrigger>
-            <PopoverContent>
-              <div className="p-4">
-                <input
+
+          <Dialog open={isDialogOpen} onOpenChange={setIsDialogOpen}>
+            <DialogTrigger asChild>
+              <Button className="!text-sm mt-4">Add / Withdraw Funds</Button>
+            </DialogTrigger>
+            <DialogContent>
+              <div className="p-4 flex flex-col gap-3">
+                <Input
                   type="number"
                   id="amount"
                   value={amount}
                   onChange={(e) => setAmount(e.target.value)}
                   placeholder="Enter amount of SOL"
-                  className="mb-4 p-2 border rounded"
+                  className="my-4 p-2 border border-gray-300 rounded"
                 />
-                <WalletMultiButton />
                 <Button
                   className="!text-sm mt-2"
-                  onClick={handleTransaction}
+                  onClick={() => handleTransaction(true)}
                   disabled={isAdding}
                 >
                   {isAdding ? "Adding..." : "Add"}
                 </Button>
+                <Button
+                  className="!text-sm mt-2"
+                  onClick={() => handleTransaction(false)}
+                  disabled={isWithdrawing}
+                >
+                  {isWithdrawing ? "Withdrawing..." : "Withdraw"}
+                </Button>
               </div>
-            </PopoverContent>
-          </Popover>
+            </DialogContent>
+          </Dialog>
         </div>
       </div>
       <div className="max-w-lg bg-slate-50 mx-auto shadow-lg">
