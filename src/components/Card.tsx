@@ -29,6 +29,7 @@ export default function Card({
   const { connection } = useConnection();
   const { publicKey, sendTransaction } = useWallet();
   const [isPopoverOpen, setIsPopoverOpen] = useState(false);
+  const [walletBalance, setWalletBalance] = useState(0.0);
 
   useEffect(() => {
     const copied = setTimeout(() => {
@@ -50,11 +51,41 @@ export default function Card({
     fetchBal();
   }, [primaryKey]);
 
+  useEffect(() => {
+    async function fetchWalletBalance() {
+      if (publicKey) {
+        const balance = await connection.getBalance(publicKey);
+        setWalletBalance(balance / web3.LAMPORTS_PER_SOL);
+      }
+    }
+
+    fetchWalletBalance();
+  }, [publicKey, connection]);
+
   const handleTransaction = async () => {
     if (!connection || !publicKey) {
       toast({
         title: "Error",
         description: "Please connect your wallet first!",
+        variant: "destructive",
+      });
+      return;
+    }
+
+    const amountInSol = parseFloat(amount);
+    if (amountInSol <= 0) {
+      toast({
+        title: "Error",
+        description: "Amount must be greater than 0!",
+        variant: "destructive",
+      });
+      return;
+    }
+
+    if (amountInSol > walletBalance) {
+      toast({
+        title: "Error",
+        description: "Insufficient balance in your wallet!",
         variant: "destructive",
       });
       return;
@@ -66,7 +97,7 @@ export default function Card({
       const signature = await addFunds(
         publicKey,
         new web3.PublicKey(primaryKey),
-        parseFloat(amount),
+        amountInSol,
         sendTransaction
       );
       setTxSig(signature);
@@ -106,7 +137,7 @@ export default function Card({
       } else {
         toast({
           title: "Error",
-          description: "Transaction failed!",
+          description: `Transaction failed! Reason: ${(error as any).message}`,
           variant: "destructive",
         });
       }
