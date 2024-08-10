@@ -1,22 +1,51 @@
-"use client"
+"use client";
 
-import { signIn, signOut, useSession } from "next-auth/react";
+import { Button } from "@/components/ui/button";
+import { useSession, signIn, signOut } from "next-auth/react";
 
 export default function Home() {
-
-  const session = useSession();
-
+  const { data: session } = useSession();
 
   return (
-    <div>
-      Hello User :
-      {!session.data ?
-        <button onClick={() => signIn()} className="p-4 bg-black text-white">
-          Sign In
-        </button> : <button onClick={() => signOut()} className="p-4 bg-black text-white">
-          Sign Out
-        </button>}
-
+    <div className="min-h-screen flex flex-col items-center justify-center bg-gray-100">
+      <div className="container mx-auto flex justify-between items-center">
+        <h1 className="text-2xl font-bold">Welcome to Solana Wallet App</h1>
+        <div>
+          {!session ? (
+            <Button onClick={() => signIn("github")}>
+              Sign In with GitHub
+            </Button>
+          ) : (
+            <Button onClick={() => signOut()}>Sign Out</Button>
+          )}
+        </div>
+      </div>
+      <main className="flex-grow container mx-auto flex flex-col items-center justify-center">
+        <h2 className="text-4xl font-bold mb-4">Get Started with GitSol</h2>
+        {!session ? (
+          <>
+            <p className="text-lg mb-8">
+              Sign up using GitHub, generate a Solana wallet, and add funds to
+              get started.
+            </p>
+            <Button onClick={() => signIn("github")} className="px-6 py-3">
+              Sign In with GitHub
+            </Button>
+          </>
+        ) : (
+          <p className="text-lg mb-8">
+            As a maintainer, you can directly dispense Solana bounties by
+            commenting <code>/bounty</code> under the PR.
+          </p>
+        )}
+      </main>
+      <footer className="w-full py-4 bg-white shadow-md">
+        <div className="container mx-auto text-center">
+          <p className="text-sm text-gray-500">
+            &copy; {new Date().getFullYear()} GitSol. All rights reserved.
+          </p>
+        </div>
+      </footer>
     </div>
   );
 }
