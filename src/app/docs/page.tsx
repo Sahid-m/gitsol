@@ -62,7 +62,7 @@ export default function Docs() {
           Step 3: Start Using the Bot
         </h2>
         <p className="text-lg text-gray-700 mb-4">
-          Once you've installed the bot on your repository and funded your
+          Once you have installed the bot on your repository and funded your
           wallet, you can start using it by commenting
           <strong className="text-blue-600"> /bounty $amount</strong> on issues.
         </p>
@@ -73,7 +73,7 @@ export default function Docs() {
         <p className="text-lg text-gray-700">
           After the contributor submits a pull request and it gets merged, the
           bounty amount will automatically be transferred from your wallet to
-          the contributor's SOL address.
+          the contributor`&apos;`s SOL address.
         </p>
       </section>
     </div>
