@@ -26,8 +26,8 @@ export default async function Bounties() {
                 <p className="text-lg font-bold text-green-400">
                   ${bounty.bountyAmount}
                 </p>
-                <p className="text-lg font-bold text-green-400">
-                  ${bounty.issueProgrammingLang}
+                <p className="text-sm text-gray-400">
+                  {bounty.issueProgrammingLang}
                 </p>
                 <p className="mt-2 text-gray-400">#{bounty.issueNumber}</p>
                 <p className="text-sm text-gray-400">
