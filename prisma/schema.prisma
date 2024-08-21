@@ -29,16 +29,21 @@ model SolWallet {
 }
 
 model Bounties {
-  id           String        @id @default(uuid())
-  bountyAmount String
-  ownerId      String
-  issueNumber  String
-  issueId      String
-  completed    Boolean
-  githubRepo   String
-  winnerId     String?       @default("")
-  owner        User          @relation(fields: [ownerId], references: [id])
-  contributors Contributor[] @relation("BountyContributors")
+  id                   String        @id @default(uuid())
+  bountyAmount         String
+  issueName            String
+  ownerId              String
+  issueNumber          String
+  issueId              String
+  issueDescription     String        @default("")
+  completed            Boolean
+  githubRepo           String
+  githubRepoName       String        @default("")
+  winnerId             String?       @default("")
+  owner                User          @relation(fields: [ownerId], references: [id])
+  contributors         Contributor[] @relation("BountyContributors")
+  issueLink            String?       @default("")
+  issueProgrammingLang String?
 }
 
 model Contributor {

@@ -1,11 +1,11 @@
 "use client";
 
+import { Menu } from "lucide-react";
 import { signOut, useSession } from "next-auth/react";
 import Link from "next/link";
 import React, { useState } from "react";
 import { Button } from "./ui/button";
-import { Popover, PopoverTrigger, PopoverContent } from "./ui/popover";
-import { Menu } from "lucide-react";
+import { Popover, PopoverContent, PopoverTrigger } from "./ui/popover";
 
 export default function Navbar() {
   const session = useSession();
@@ -20,8 +20,8 @@ export default function Navbar() {
           </div>
           <div className=" flex flex-row justify-center items-center space-x-5">
             <Link href="/">Home</Link>
-            <Link href="/">About</Link>
-            <Link href="/">Bounties</Link>
+            <Link href="/docs">About</Link>
+            <Link href="/bounties">Bounties</Link>
           </div>
           <div className="hidden sm:flex">
             {session.data ? (

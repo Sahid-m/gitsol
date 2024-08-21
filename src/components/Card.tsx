@@ -1,27 +1,29 @@
 "use client";
 
-import { getSolBalanaceInUSD, addFunds, withdrawFunds } from "@/lib/solutils";
+import { useToast } from "@/components/ui/use-toast";
+import { addFunds, getSolBalanaceInUSD, withdrawFunds } from "@/lib/solutils";
 import { useConnection, useWallet } from "@solana/wallet-adapter-react";
 import { WalletMultiButton } from "@solana/wallet-adapter-react-ui";
-import React, { useEffect, useState } from "react";
-import Image from "next/image";
-import { Button } from "./ui/button";
-import { Dialog, DialogTrigger, DialogContent } from "./ui/dialog";
 import * as web3 from "@solana/web3.js";
-import { useToast } from "@/components/ui/use-toast";
-import { ToastAction } from "./ui/toast";
+import Image from "next/image";
+import React, { useEffect, useState } from "react";
+import { Button } from "./ui/button";
+import { Dialog, DialogContent, DialogTrigger } from "./ui/dialog";
 import { Input } from "./ui/input";
+import { ToastAction } from "./ui/toast";
 
 export default function Card({
   name,
   img,
   primaryKey,
   privateKey,
+  currentBountyBal
 }: {
   name: string;
   img: string;
   primaryKey: string;
   privateKey: string;
+  currentBountyBal: string
 }) {
   const { toast } = useToast();
   const [copied, setCopied] = useState(false);
@@ -49,7 +51,8 @@ export default function Card({
   useEffect(() => {
     async function fetchBal() {
       const bal = await getSolBalanaceInUSD(primaryKey);
-      setBal(bal);
+      const fbal = bal - parseFloat(currentBountyBal);
+      setBal(fbal ? fbal : bal);
     }
 
     fetchBal();
@@ -115,11 +118,11 @@ export default function Card({
     try {
       const signature = isAddingFunds
         ? await addFunds(
-            publicKey,
-            new web3.PublicKey(primaryKey),
-            amountInSol,
-            sendTransaction
-          )
+          publicKey,
+          new web3.PublicKey(primaryKey),
+          amountInSol,
+          sendTransaction
+        )
         : await withdrawFunds(privateKey, publicKey, amountInSol);
 
       setTxSig(signature);
@@ -129,9 +132,8 @@ export default function Card({
 
       toast({
         title: "Success",
-        description: `${
-          isAddingFunds ? "Transaction" : "Withdrawal"
-        } completed successfully.`,
+        description: `${isAddingFunds ? "Transaction" : "Withdrawal"
+          } completed successfully.`,
         action: (
           <ToastAction
             altText="View Transaction"

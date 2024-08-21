@@ -12,6 +12,12 @@ export default async function Wallet() {
 
   const wallet = await getUserWallet(user.uid);
 
+  if (!wallet) {
+    return (<div className="h-screen flex justify-center items-center">
+      No wallet
+    </div>)
+  }
+
   return (
     <div className="h-screen flex justify-center items-center">
       <div className="">
@@ -20,6 +26,7 @@ export default async function Wallet() {
           privateKey={wallet?.privateKey ?? ""}
           img={user?.image}
           name={user?.name ?? ""}
+          currentBountyBal={wallet.CurrentBountyBal}
         />
       </div>
     </div>
@@ -34,6 +41,7 @@ async function getUserWallet(uid: string) {
     select: {
       publicKey: true,
       privateKey: true,
+      CurrentBountyBal: true,
     },
   });
   return data;

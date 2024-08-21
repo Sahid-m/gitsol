@@ -1,12 +1,12 @@
 import {
   clusterApiUrl,
   Connection,
+  Keypair,
   LAMPORTS_PER_SOL,
   PublicKey,
+  sendAndConfirmTransaction,
   SystemProgram,
   Transaction,
-  sendAndConfirmTransaction,
-  Keypair,
 } from "@solana/web3.js";
 
 export const connection = new Connection(clusterApiUrl("devnet"), "confirmed");
@@ -21,9 +21,6 @@ export async function getSolBalanaceInUSD(publicKey: string): Promise<number> {
   });
 
   const data = await response.json();
-
-  console.log(data);
-  console.log(data.data.SOL);
 
   const currentPrice = data.data?.SOL?.price ?? 0;
 

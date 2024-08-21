@@ -6,7 +6,7 @@ import * as React from "react";
 import { cn } from "@/lib/utils";
 import PrimaryButton from "./Button";
 
-interface UserAuthFormProps extends React.HTMLAttributes<HTMLDivElement> {}
+interface UserAuthFormProps extends React.HTMLAttributes<HTMLDivElement> { }
 
 export function UserAuthForm({ className, ...props }: UserAuthFormProps) {
   return (
@@ -30,7 +30,7 @@ export function UserAuthForm({ className, ...props }: UserAuthFormProps) {
           });
         }}
         className="w-full flex items-center justify-center"
-        // type="button"
+      // type="button"
       >
         <svg viewBox="0 0 438.549 438.549" className="mr-2 h-4 w-4">
           <path
