@@ -1,10 +1,12 @@
 "use client";
 
 import { Button } from "@/components/ui/button";
-import { useSession, signIn, signOut } from "next-auth/react";
+import { signIn, signOut, useSession } from "next-auth/react";
+import { useRouter } from "next/navigation";
 
 export default function Home() {
   const { data: session } = useSession();
+  const router = useRouter();
 
   return (
     <div className="min-h-screen flex flex-col items-center justify-center bg-gray-100">
@@ -33,10 +35,17 @@ export default function Home() {
             </Button>
           </>
         ) : (
-          <p className="text-lg mb-8">
-            As a maintainer, you can directly dispense Solana bounties by
-            commenting <code>/bounty</code> under the PR.
-          </p>
+          <>
+
+            <p className="text-lg mb-8">
+              As a maintainer, you can directly dispense Solana bounties by
+              commenting <code>/bounty</code> under the PR.
+            </p>
+
+            <Button onClick={() => { router.push("/userwallet") }} className="px-6 py-3">
+              Go to your wallet
+            </Button>
+          </>
         )}
       </main>
       <footer className="w-full py-4 bg-white shadow-md">
