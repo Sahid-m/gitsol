@@ -15,7 +15,8 @@ export default function Navbar() {
     <header className="fixed top-0 z-40 w-full border-b bg-slate-900">
       <div className="container flex h-16 items-center space-x-4 sm:justify-between sm:space-x-0 p-5 bg-slate-900 text-white ">
         <div className="flex flex-row w-full justify-between">
-          <div className="flex items-center justify-center">
+          <div className="flex items-center space-x-2 justify-center">
+            <img src="/favicon.png" width="25px" />
             <h1>GitSol</h1>
           </div>
           <div className=" flex flex-row justify-center items-center space-x-5">
