@@ -27,7 +27,7 @@ export default function Card({
 }) {
   const { toast } = useToast();
   const [copied, setCopied] = useState(false);
-  const [bal, setBal] = useState(0.0);
+  const [bal, setBal] = useState<number>();
   const [amount, setAmount] = useState("");
   const [txSig, setTxSig] = useState("");
   const [isAdding, setIsAdding] = useState(false);
@@ -180,7 +180,7 @@ export default function Card({
           {AccountInfo()}
           <div className="mt-6 flex justify-between items-center">
             <div className="text-3xl font-bold text-gray-900">
-              ${bal.toFixed(2)}{" "}
+              {bal ? "$" + bal.toFixed(2) : "loading..."}{" "}
               <span className="text-lg font-medium text-gray-500">USD</span>
             </div>
             <Button

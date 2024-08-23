@@ -2,6 +2,8 @@ import { Card } from "@/components/ui/card";
 import { getAllBounties } from "@/lib/actions/bounties.actions";
 import Link from "next/link";
 
+export const revalidate = 5;
+
 export default async function Bounties() {
   const bounties = await getAllBounties();
 
