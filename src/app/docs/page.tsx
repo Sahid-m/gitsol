@@ -73,7 +73,7 @@ export default function Docs() {
         <p className="text-lg text-gray-700">
           After the contributor submits a pull request and it gets merged, the
           bounty amount will automatically be transferred from your wallet to
-          the contributor`&apos;`s SOL address.
+          the contributor&apos;s SOL address.
         </p>
       </section>
     </div>

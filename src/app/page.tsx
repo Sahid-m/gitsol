@@ -10,20 +10,8 @@ export default function Home() {
 
   return (
     <div className="min-h-screen flex flex-col items-center justify-center bg-gray-100">
-      <div className="container mx-auto flex justify-between items-center">
-        <h1 className="text-2xl font-bold">Welcome to Solana Wallet App</h1>
-        <div>
-          {!session ? (
-            <Button onClick={() => signIn("github")}>
-              Sign In with GitHub
-            </Button>
-          ) : (
-            <Button onClick={() => signOut()}>Sign Out</Button>
-          )}
-        </div>
-      </div>
       <main className="flex-grow container mx-auto flex flex-col items-center justify-center">
-        <h2 className="text-4xl font-bold mb-4">Get Started with GitSol</h2>
+        <h2 className="text-4xl font-bold mb-4 text-center md:text-left">Get Started with GitSol</h2>
         {!session ? (
           <>
             <p className="text-lg mb-8">
@@ -37,7 +25,7 @@ export default function Home() {
         ) : (
           <>
 
-            <p className="text-lg mb-8">
+            <p className="text-lg mb-8 text-center md:text-left">
               As a maintainer, you can directly dispense Solana bounties by
               commenting <code>/bounty</code> under the PR.
             </p>
