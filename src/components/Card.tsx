@@ -6,10 +6,12 @@ import { useConnection, useWallet } from "@solana/wallet-adapter-react";
 import { WalletMultiButton } from "@solana/wallet-adapter-react-ui";
 import * as web3 from "@solana/web3.js";
 import Image from "next/image";
+import Link from "next/link";
 import React, { useEffect, useState } from "react";
 import { Button } from "./ui/button";
 import { Dialog, DialogContent, DialogTrigger } from "./ui/dialog";
 import { Input } from "./ui/input";
+import { Skeleton } from "./ui/skeleton";
 import { ToastAction } from "./ui/toast";
 
 export default function Card({
@@ -39,13 +41,8 @@ export default function Card({
   const [internalWalletBalance, setInternalWalletBalance] = useState(0.0);
 
   useEffect(() => {
-    const copied = setTimeout(() => {
-      setCopied(false);
-    }, 2000);
-
-    return () => {
-      clearTimeout(copied);
-    };
+    const timeout = setTimeout(() => setCopied(false), 2000);
+    return () => clearTimeout(timeout);
   }, [copied]);
 
   useEffect(() => {
@@ -65,9 +62,7 @@ export default function Card({
         setWalletBalance(balance / web3.LAMPORTS_PER_SOL);
       }
       if (primaryKey) {
-        const balance = await connection.getBalance(
-          new web3.PublicKey(primaryKey)
-        );
+        const balance = await connection.getBalance(new web3.PublicKey(primaryKey));
         setInternalWalletBalance(balance / web3.LAMPORTS_PER_SOL);
       }
     }
@@ -117,32 +112,23 @@ export default function Card({
 
     try {
       const signature = isAddingFunds
-        ? await addFunds(
-          publicKey,
-          new web3.PublicKey(primaryKey),
-          amountInSol,
-          sendTransaction
-        )
+        ? await addFunds(publicKey, new web3.PublicKey(primaryKey), amountInSol, sendTransaction)
         : await withdrawFunds(privateKey, publicKey, amountInSol);
 
       setTxSig(signature);
-
       const newBalance = await getSolBalanaceInUSD(primaryKey);
       setBal(newBalance);
 
       toast({
         title: "Success",
-        description: `${isAddingFunds ? "Transaction" : "Withdrawal"
-          } completed successfully.`,
+        description: `${isAddingFunds ? "Transaction" : "Withdrawal"} completed successfully.`,
         action: (
           <ToastAction
             altText="View Transaction"
-            onClick={() =>
-              window.open(
-                `https://explorer.solana.com/tx/${signature}?cluster=devnet`,
-                "_blank"
-              )
-            }
+            onClick={() => window.open(
+              `https://explorer.solana.com/tx/${signature}?cluster=devnet`,
+              "_blank"
+            )}
           >
             View Transaction
           </ToastAction>
@@ -152,20 +138,11 @@ export default function Card({
       setIsDialogOpen(false);
     } catch (error) {
       console.error("Transaction Error:", error);
-      if (error instanceof web3.SendTransactionError) {
-        console.error("SendTransactionError:", (error as any).error);
-        toast({
-          title: "Error",
-          description: (error as any).error.message,
-          variant: "destructive",
-        });
-      } else {
-        toast({
-          title: "Error",
-          description: `Transaction failed! Reason: ${(error as any).message}`,
-          variant: "destructive",
-        });
-      }
+      toast({
+        title: "Error",
+        description: `Transaction failed! Reason: ${(error as any).message}`,
+        variant: "destructive",
+      });
     } finally {
       setAmount("");
       isAddingFunds ? setIsAdding(false) : setIsWithdrawing(false);
@@ -174,17 +151,16 @@ export default function Card({
 
   return (
     <>
-      <div className="max-w-lg mx-auto bg-white shadow-lg rounded-lg overflow-hidden">
-        <WalletMultiButton />
+      <div className="max-w-md mx-auto bg-white shadow-lg rounded-lg overflow-hidden">
         <div className="px-6 py-4 flex flex-col">
           {AccountInfo()}
           <div className="mt-6 flex justify-between items-center">
             <div className="text-3xl font-bold text-gray-900">
-              {bal ? "$" + bal.toFixed(2) : "loading..."}{" "}
+              {bal ? "$" + bal.toFixed(2) : <Skeleton className="h-10" />}{" "}
               <span className="text-lg font-medium text-gray-500">USD</span>
             </div>
             <Button
-              className="!text-sm"
+              className="text-sm"
               onClick={() => {
                 navigator.clipboard.writeText(primaryKey);
                 setCopied(true);
@@ -193,7 +169,10 @@ export default function Card({
               {copied ? "Copied!" : "Your Wallet Address"}
             </Button>
           </div>
-
+          <div className="w-full my-3 flex flex-row">
+            <p className="w-1/2 text-gray-500">Connect Your Wallet For Transaction</p>
+            <WalletMultiButton className="!bg-black ml-auto" />
+          </div>
           <Dialog open={isDialogOpen} onOpenChange={setIsDialogOpen}>
             <DialogTrigger asChild>
               <Button className="!text-sm mt-4">Add / Withdraw Funds</Button>
@@ -225,13 +204,9 @@ export default function Card({
               </div>
             </DialogContent>
           </Dialog>
-        </div>
-      </div>
-      <div className="max-w-lg bg-slate-50 mx-auto shadow-lg">
-        <div className="flex justify-center  items-center">
-          {/* <PrimaryButton className='!text-sm !w-1/3'>
-    
-                    </PrimaryButton> */}
+          <Link href="/my-bounties">
+            <Button className="text-sm mt-4 w-full">View Your Given Bounties</Button>
+          </Link>
         </div>
       </div>
     </>
@@ -242,7 +217,7 @@ export default function Card({
       <div className="flex items-center">
         <Image
           alt="Profile"
-          className=" rounded-full flex items-center justify-center text-xl font-semibold"
+          className="rounded-full flex items-center justify-center text-xl font-semibold"
           src={img}
           width={50}
           height={50}

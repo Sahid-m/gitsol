@@ -8,14 +8,15 @@ datasource db {
 }
 
 model User {
-  id          String     @id @default(uuid())
-  username    String     @unique
+  id          String       @id @default(uuid())
+  username    String       @unique
   profileImg  String?
-  solWalletId String?    @unique
+  solWalletId String?      @unique
   name        String?
   bountyId    String?
-  sub         String     @unique
+  sub         String       @unique
   bounties    Bounties[]
+  prBounties  PrBounties[]
   solWallet   SolWallet?
 }
 
@@ -55,4 +56,16 @@ model Contributor {
   solPublicKey   String
   bountiesWonId  String[]   @default([])
   bounties       Bounties[] @relation("BountyContributors")
+}
+
+model PrBounties {
+  id               String @id @default(uuid())
+  token            String @unique
+  ownerId          String
+  owner            User   @relation(fields: [ownerId], references: [id])
+  bountyAmount     String
+  prNumber         String
+  prLink           String
+  winnerSub        String
+  walletPrivateKey String
 }

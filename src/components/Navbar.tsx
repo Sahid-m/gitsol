@@ -27,8 +27,8 @@ export default function Navbar() {
           <div className="hidden sm:flex">
             {session.data ? (
               <>
-                <Link href="/userwallet" className="px-4">
-                  <Button variant={"secondary"}>Wallet</Button>
+                <Link href="/dashboard" className="px-4">
+                  <Button variant={"secondary"}>Dashboard</Button>
                 </Link>
                 <Button variant={"destructive"} onClick={() => signOut()}>Logout</Button>
               </>
