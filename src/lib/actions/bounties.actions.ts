@@ -27,3 +27,30 @@ export async function getAllBounties() {
     throw new Error("Error fetching bounties");
   }
 }
+
+export async function getAllUserBounties(uid: string) {
+  try {
+    const bounties = await prisma.bounties.findMany({
+      include: {
+        owner: {
+          select: {
+            username: true,
+          },
+        },
+        contributors: {
+          select: {
+            name: true,
+          },
+        },
+      },
+      where: {
+        completed: false,
+        ownerId: uid,
+      },
+    });
+    return bounties;
+  } catch (error) {
+    console.error("Error fetching bounties:", error);
+    throw new Error("Error fetching bounties");
+  }
+}
