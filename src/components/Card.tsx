@@ -19,13 +19,15 @@ export default function Card({
   img,
   primaryKey,
   privateKey,
-  currentBountyBal
+  currentBountyBal,
+  bounty
 }: {
   name: string;
   img: string;
   primaryKey: string;
   privateKey: string;
   currentBountyBal: string
+  bounty: boolean
 }) {
   const { toast } = useToast();
   const [copied, setCopied] = useState(false);
@@ -204,9 +206,10 @@ export default function Card({
               </div>
             </DialogContent>
           </Dialog>
-          <Link href="/my-bounties">
+          {bounty ? <Link href="/my-bounties">
             <Button className="text-sm mt-4 w-full">View Your Given Bounties</Button>
-          </Link>
+          </Link> : <></>}
+
         </div>
       </div>
     </>

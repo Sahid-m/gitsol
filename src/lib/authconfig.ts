@@ -9,6 +9,7 @@ interface ext_session extends Session {
     name: string;
     image: string;
     uid: string;
+    sub: string;
   };
 }
 
@@ -28,6 +29,7 @@ export const authConfig = {
       const newSession: ext_session = session as ext_session;
       if (newSession.user && token.uid) {
         newSession.user.uid = token.uid;
+        newSession.user.sub = token.sub;
       }
 
       return newSession;

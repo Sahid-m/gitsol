@@ -1,3 +1,5 @@
+"use server";
+
 import db from "@/db";
 import {
   clusterApiUrl,
@@ -41,4 +43,25 @@ export async function getUserWallet(uid: string) {
     },
   });
   return data;
+}
+
+export async function getPrBountiesDetails(token: string, sub: string) {
+  console.log("befor getting data");
+
+  try {
+    const data = await db.prBounties.findFirst({
+      where: {
+        token: token,
+        winnerSub: sub,
+      },
+    });
+
+    console.log("after getting data");
+
+    return data;
+  } catch (e) {
+    console.log("error");
+    console.log(e);
+    return null;
+  }
 }

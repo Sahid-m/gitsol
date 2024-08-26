@@ -27,6 +27,7 @@ model SolWallet {
   userid           String @unique
   user             User   @relation(fields: [userid], references: [id])
   CurrentBountyBal String @default("0")
+  totalBountyGiven String @default("0")
 }
 
 model Bounties {
