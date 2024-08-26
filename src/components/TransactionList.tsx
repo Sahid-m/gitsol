@@ -2,13 +2,13 @@
 
 import { Card, CardContent } from "@/components/ui/card";
 import { Skeleton } from "@/components/ui/skeleton";
-import { getTransactions } from "@/lib/actions/wallet.actions";
+import { getTransactions } from "@/lib/solutils";
 import { TransactionResponse } from "@solana/web3.js";
 import { Copy } from "lucide-react"; // Assuming Lucide React icons are being used
 import { useEffect, useState } from "react";
 
 export const TransactionList = ({ publicKey }: { publicKey: string }) => {
-    const [transactions, setTransactions] = useState<TransactionResponse[]>([]);
+    const [transactions, setTransactions] = useState<(TransactionResponse | null)[]>([]);
     const [loading, setLoading] = useState<boolean>(true);
 
     useEffect(() => {
@@ -32,9 +32,19 @@ export const TransactionList = ({ publicKey }: { publicKey: string }) => {
         );
     }
 
+    if (!transactions) {
+        return (
+            <div className="">
+                No Transactions
+            </div>
+        )
+    }
+
     return (
         <div className="space-y-2">
             {transactions.map((tx, index) => {
+
+                if (!tx) return (<>No Transactions</>)
                 const fromAddress = tx.transaction.message.accountKeys[0].toBase58();
                 const toAddress = tx.transaction.message.accountKeys[1].toBase58();
                 //@ts-ignore
@@ -70,3 +80,5 @@ export const TransactionList = ({ publicKey }: { publicKey: string }) => {
         </div>
     );
 };
+
+

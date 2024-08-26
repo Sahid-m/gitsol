@@ -52,10 +52,10 @@ export default function Navbar() {
                   {session.data ? (
                     <>
                       <Link
-                        href="/userwallet"
+                        href="/dashboard"
                         onClick={() => setIsPopoverOpen(false)}
                       >
-                        <Button className="w-full">Wallet</Button>
+                        <Button className="w-full">Dashboard</Button>
                       </Link>
                       <Button
                         className="w-full"

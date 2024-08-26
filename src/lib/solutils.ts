@@ -7,6 +7,7 @@ import {
   sendAndConfirmTransaction,
   SystemProgram,
   Transaction,
+  TransactionResponse,
 } from "@solana/web3.js";
 
 export const connection = new Connection(clusterApiUrl("devnet"), "confirmed");
@@ -57,6 +58,32 @@ export async function addFunds(
     } else {
       throw new Error("An unknown error occurred");
     }
+  }
+}
+
+export async function getTransactions(
+  publicKey: string
+): Promise<(TransactionResponse | null)[]> {
+  try {
+    const pubKey = new PublicKey(publicKey);
+
+    // Fetch signatures for transactions involving the public key
+    const signatures = await connection.getSignaturesForAddress(pubKey);
+
+    // Fetch transaction details for each signature
+    const transactions = await Promise.all(
+      signatures.map(async (signatureInfo) => {
+        const transaction = await connection.getTransaction(
+          signatureInfo.signature
+        );
+        return transaction;
+      })
+    );
+
+    return transactions;
+  } catch (error) {
+    console.error("Failed to get transactions:", error);
+    return [];
   }
 }
 
