@@ -54,7 +54,7 @@ export default async function Dashboard() {
                         img={user?.image}
                         name={user?.name ?? ""}
                         currentBountyBal={wallet.CurrentBountyBal}
-                        bounty={false}
+                        bounty={true}
                     />
                 </TabsContent>
                 <TabsContent value="transaction" className="">
