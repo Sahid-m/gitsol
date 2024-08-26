@@ -1,6 +1,8 @@
-import Navbar from "@/components/Navbar";
+
+import { SidebarFinal } from "@/components/Navbar";
 import { Toaster } from "@/components/ui/toaster";
 import type { Metadata } from "next";
+import { ThemeProvider } from "next-themes";
 import { Inter } from "next/font/google";
 import "./globals.css";
 import Providers from "./providers";
@@ -23,8 +25,12 @@ export default function RootLayout({
     <html lang="en">
       <body className={inter.className}>
         <Providers>
-          <Navbar />
-          {children}
+          <ThemeProvider attribute="class"
+            defaultTheme="dark"
+            enableSystem
+            disableTransitionOnChange>
+            <SidebarFinal>{children}</SidebarFinal>
+          </ThemeProvider>
         </Providers>
         <Toaster />
       </body>

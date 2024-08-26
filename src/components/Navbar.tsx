@@ -1,86 +1,150 @@
 "use client";
-
-import { Menu } from "lucide-react";
+import {
+  IconAward,
+  IconBrandTabler,
+  IconCoin,
+  IconFileText,
+  IconHome,
+  IconLayoutDashboard,
+  IconSettings,
+  IconTrophy,
+  IconUserBolt
+} from "@tabler/icons-react";
+import { motion } from "framer-motion";
 import { signOut, useSession } from "next-auth/react";
+import Image from "next/image";
 import Link from "next/link";
 import React, { useState } from "react";
+import ThemeToggle from "./theme-toggle";
 import { Button } from "./ui/button";
-import { Popover, PopoverContent, PopoverTrigger } from "./ui/popover";
+import { Sidebar, SidebarBody, SidebarLink } from "./ui/sidebar";
 
-export default function Navbar() {
+interface LinkItem {
+  label: string;
+  href: string;
+  icon: React.ReactNode;
+}
+
+export function SidebarFinal({ children }: { children: React.ReactNode }) {
+
   const session = useSession();
-  const [isPopoverOpen, setIsPopoverOpen] = useState(false);
+
+  const UnAuthenticatedLinks: LinkItem[] = [
+    {
+      label: "Home",
+      href: "/",
+      icon: <IconHome className="text-neutral-700 dark:text-neutral-200 h-5 w-5 flex-shrink-0" />,
+    },
+    {
+      label: "Docs",
+      href: "/docs",
+      icon: <IconFileText className="text-neutral-700 dark:text-neutral-200 h-5 w-5 flex-shrink-0" />,
+    },
+    {
+      label: "Bounties",
+      href: "/bounties",
+      icon: <IconTrophy className="text-neutral-700 dark:text-neutral-200 h-5 w-5 flex-shrink-0" />,
+    },
+  ];
+  const AuthenticatedLinks: LinkItem[] = [
+    {
+      label: "Home",
+      href: "/",
+      icon: <IconHome className="text-neutral-700 dark:text-neutral-200 h-5 w-5 flex-shrink-0" />,
+    },
+    {
+      label: "Dashboard",
+      href: "/dashboard",
+      icon: <IconLayoutDashboard className="text-neutral-700 dark:text-neutral-200 h-5 w-5 flex-shrink-0" />,
+    },
+    {
+      label: "My Bounties",
+      href: "/my-bounties",
+      icon: <IconCoin className="text-neutral-700 dark:text-neutral-200 h-5 w-5 flex-shrink-0" />,
+    },
+    {
+      label: "Docs",
+      href: "/docs",
+      icon: <IconFileText className="text-neutral-700 dark:text-neutral-200 h-5 w-5 flex-shrink-0" />,
+    },
+    {
+      label: "Bounties",
+      href: "/bounties",
+      icon: <IconTrophy className="text-neutral-700 dark:text-neutral-200 h-5 w-5 flex-shrink-0" />,
+    },
+  ];
+
+  const [open, setOpen] = useState(false);
 
   return (
-    <header className="fixed top-0 z-40 w-full border-b bg-slate-900">
-      <div className="container flex h-16 items-center space-x-4 sm:justify-between sm:space-x-0 p-5 bg-slate-900 text-white ">
-        <div className="flex flex-row w-full justify-between">
-          <div className="flex items-center space-x-2 justify-center">
-            <img src="/favicon.png" width="25px" />
-            <h1>GitSol</h1>
+    <div className="h-screen w-screen flex flex-col md:flex-row overflow-hidden bg-gray-100 dark:bg-neutral-900">
+      <Sidebar open={open} setOpen={setOpen}>
+        <SidebarBody className="h-full justify-between">
+          <div className="flex flex-col flex-1 overflow-y-auto">
+            {open ? <Logo /> : <LogoIcon />}
+            <div className="mt-8 flex flex-col gap-2">
+              {session.status === 'authenticated' ? AuthenticatedLinks.map((link, idx) => (
+                <SidebarLink key={idx} link={link} />
+              )) :
+                UnAuthenticatedLinks.map((link, idx) => (
+                  <SidebarLink key={idx} link={link} />
+                ))
+              }
+
+            </div>
           </div>
-          <div className=" flex flex-row justify-center items-center space-x-5">
-            <Link href="/">Home</Link>
-            <Link href="/docs">About</Link>
-            <Link href="/bounties">Bounties</Link>
-          </div>
-          <div className="hidden sm:flex">
-            {session.data ? (
-              <>
-                <Link href="/dashboard" className="px-4">
-                  <Button variant={"secondary"}>Dashboard</Button>
-                </Link>
-                <Button variant={"destructive"} onClick={() => signOut()}>Logout</Button>
-              </>
-            ) : (
-              <>
-                <Link href="/signin">
-                  <Button>Sign in</Button>
-                </Link>
-              </>
-            )}
-          </div>
-          <div className="sm:hidden flex items-center justify-center">
-            <Popover open={isPopoverOpen} onOpenChange={setIsPopoverOpen}>
-              <PopoverTrigger asChild>
-                <Button variant="ghost" size="icon">
-                  <Menu />
-                </Button>
-              </PopoverTrigger>
-              <PopoverContent className="w-48">
-                <div className="flex flex-col space-y-2">
-                  {session.data ? (
-                    <>
-                      <Link
-                        href="/dashboard"
-                        onClick={() => setIsPopoverOpen(false)}
-                      >
-                        <Button className="w-full">Dashboard</Button>
-                      </Link>
-                      <Button
-                        className="w-full"
-                        onClick={() => {
-                          signOut();
-                          setIsPopoverOpen(false);
-                        }}
-                      >
-                        Logout
-                      </Button>
-                    </>
-                  ) : (
-                    <Link
-                      href="/signin"
-                      onClick={() => setIsPopoverOpen(false)}
-                    >
-                      <Button className="w-full">Sign in</Button>
-                    </Link>
-                  )}
+          {session.status === "authenticated" ? <>
+            <div className="mt-4 flex items-center gap-2 px-4 py-2 border-t border-neutral-200 dark:border-neutral-700">
+              <img
+                //@ts-ignore
+                src={session.data?.user?.image}
+                className="h-8 w-8 rounded-full"
+                width="32px"
+                height="32px"
+                alt="Avatar"
+              />
+              {open && (
+                <div className="flex items-center justify-between w-full space-x-3">
+                  <div className="text-sm text-neutral-700 dark:text-neutral-300">
+                    {session.data?.user?.name}
+                  </div>
+                  <div className="justify-end items-end">
+                    <Button className="text-sm px-3 py-2" variant={"destructive"} onClick={() => signOut()}>Logout</Button>
+                  </div>
                 </div>
-              </PopoverContent>
-            </Popover>
-          </div>
+              )}
+            </div></> : <> {open && <Link href="/signin">
+              <Button className="w-full" variant={"default"}>Sign in</Button>
+            </Link>}</>}
+
+
+          <ThemeToggle />
+        </SidebarBody>
+      </Sidebar>
+      <main className="flex-1 w-full overflow-auto py-2 sm:py-4 md:py-8">
+        <div className="w-full px-2 sm:px-4 md:px-8">
+          {children}
         </div>
-      </div>
-    </header>
+      </main>
+    </div>
   );
 }
+
+export const Logo = () => (
+  <Link href="/" className="font-normal flex space-x-2 items-center text-sm text-black py-1 relative z-20">
+    <img src="/favicon.png" width="25px" />
+    <motion.span
+      initial={{ opacity: 0 }}
+      animate={{ opacity: 1 }}
+      className="font-medium text-black dark:text-white whitespace-pre"
+    >
+      GitSol
+    </motion.span>
+  </Link>
+);
+
+export const LogoIcon = () => (
+  <Link href="/" className="font-normal flex space-x-2 items-center text-sm text-black py-1 relative z-20">
+    <img src="/favicon.png" width="25px" />
+  </Link>
+);
