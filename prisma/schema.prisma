@@ -51,6 +51,7 @@ model Bounties {
 model Contributor {
   id             String     @id @default(uuid())
   name           String
+  profileImg     String
   email          String?
   sub            String     @unique
   totalBountyWon String     @default("0")

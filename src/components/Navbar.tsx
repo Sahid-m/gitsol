@@ -77,7 +77,7 @@ export function SidebarFinal({ children }: { children: React.ReactNode }) {
   const [open, setOpen] = useState(false);
 
   return (
-    <div className="h-screen w-screen flex flex-col md:flex-row overflow-hidden bg-gray-100 dark:bg-neutral-900">
+    <div className="h-screen w-screen flex flex-col md:flex-row overflow-hidden bg-neutral-200 dark:bg-neutral-900">
       <Sidebar open={open} setOpen={setOpen}>
         <SidebarBody className="h-full justify-between">
           <div className="flex flex-col flex-1 overflow-y-auto">

@@ -24,28 +24,7 @@ export default async function Dashboard() {
 
 
     return (
-        <div className="h-screen items-center justify-center  flex">
-            {/* <Tabs defaultValue="wallet" className="w-[400px]">
-                <TabsList className="grid w-full grid-cols-2">
-                    <TabsTrigger value="wallet">Wallet</TabsTrigger>
-                    <TabsTrigger value="transaction">Your Transactions</TabsTrigger>
-                </TabsList>
-                <TabsContent value="wallet">
-                    <WalletCard
-                        primaryKey={wallet?.publicKey ?? ""}
-                        privateKey={wallet?.privateKey ?? ""}
-                        img={user?.image}
-                        name={user?.name ?? ""}
-                        currentBountyBal={wallet.CurrentBountyBal}
-                        bounty={true}
-                    />
-                </TabsContent>
-                <TabsContent value="transaction" className="">
-
-                    <TransactionList publicKey={wallet.publicKey} />
-
-                </TabsContent>
-            </Tabs> */}
+        <div className="h-screen items-center justify-center  flex bg-neutral-200 dark:bg-neutral-900">
             <WalletCard3D
                 primaryKey={wallet?.publicKey ?? ""}
                 privateKey={wallet?.privateKey ?? ""}

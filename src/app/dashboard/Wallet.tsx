@@ -117,11 +117,11 @@ export function WalletCard3D({
     try {
       const signature = isAddingFunds
         ? await addFunds(
-            publicKey,
-            new web3.PublicKey(primaryKey),
-            amountInSol,
-            sendTransaction
-          )
+          publicKey,
+          new web3.PublicKey(primaryKey),
+          amountInSol,
+          sendTransaction
+        )
         : await withdrawFunds(privateKey, publicKey, amountInSol);
 
       setTxSig(signature);
@@ -130,9 +130,8 @@ export function WalletCard3D({
 
       toast({
         title: "Success",
-        description: `${
-          isAddingFunds ? "Transaction" : "Withdrawal"
-        } completed successfully.`,
+        description: `${isAddingFunds ? "Transaction" : "Withdrawal"
+          } completed successfully.`,
         action: (
           <ToastAction
             altText="View Transaction"
@@ -165,8 +164,8 @@ export function WalletCard3D({
   };
 
   return (
-    <CardContainer className="inter-var">
-      <BackgroundGradient>
+    <BackgroundGradient>
+      <CardContainer className="inter-var h-full" containerClassName="p-2">
         <CardBody className="bg-gray-50 relative group/card  dark:hover:shadow-2xl dark:hover:shadow-emerald-500/[0.1] dark:bg-neutral-950 dark:border-white/[0.2] border-black/[0.1] w-auto sm:w-[30rem] h-auto rounded-xl p-6 border  ">
           <CardItem
             translateZ="50"
@@ -250,7 +249,7 @@ export function WalletCard3D({
             </DialogContent>
           </Dialog>
         </CardBody>
-      </BackgroundGradient>
-    </CardContainer>
+      </CardContainer>
+    </BackgroundGradient>
   );
 }

@@ -3,6 +3,7 @@
 import { BackgroundBeams } from "@/components/ui/background-beams";
 import { BackgroundBeamsWithCollision } from "@/components/ui/background-beams-with-collision";
 import { Button } from "@/components/ui/button";
+import { Meteors } from "@/components/ui/meteors";
 import { signIn, signOut, useSession } from "next-auth/react";
 import { useRouter } from "next/navigation";
 
@@ -40,6 +41,7 @@ export default function Home() {
             </>
           )}
         </main>
+
       </BackgroundBeamsWithCollision>
       <footer className="w-full py-4 dark:bg-white bg-black shadow-md">
         <div className="container my-0 mx-auto text-center">

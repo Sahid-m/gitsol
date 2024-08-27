@@ -14,6 +14,8 @@ export async function getAllBounties() {
         contributors: {
           select: {
             name: true,
+            profileImg: true,
+            totalBountyWon: true,
           },
         },
       },
@@ -40,6 +42,8 @@ export async function getAllUserBounties(uid: string) {
         contributors: {
           select: {
             name: true,
+            profileImg: true,
+            totalBountyWon: true,
           },
         },
       },
