@@ -13,7 +13,6 @@ import { useConnection, useWallet } from "@solana/wallet-adapter-react";
 import { WalletMultiButton } from "@solana/wallet-adapter-react-ui";
 import * as web3 from "@solana/web3.js";
 import Image from "next/image";
-import Link from "next/link";
 import React, { useCallback, useEffect, useState } from "react";
 
 export function WalletCard3D({
