@@ -39,6 +39,7 @@ export default async function ClaimBounty({
         </div>)
     }
 
+
     const KeyPair = Keypair.fromSecretKey(Uint8Array.from(data.walletPrivateKey.split(",").map(Number)))
 
     const primaryKey = KeyPair.publicKey.toBase58();
@@ -54,7 +55,7 @@ export default async function ClaimBounty({
                         <GreetingBox primaryKey={primaryKey} />
                     </div>
                     <div className='my-10 '>
-                        <InputBox />
+                        <InputBox walletPrivateKey={data.walletPrivateKey} />
                     </div>
                     <div className='flex justify-center items-center'>
                         <img className='' src='/images/meme.jpg' width={400} height={400} />

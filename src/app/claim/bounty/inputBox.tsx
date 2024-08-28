@@ -2,14 +2,21 @@
 
 import { AlertDialog, AlertDialogAction, AlertDialogCancel, AlertDialogContent, AlertDialogDescription, AlertDialogFooter, AlertDialogHeader, AlertDialogTitle } from "@/components/ui/alert-dialog";
 import { PlaceholdersAndVanishInput } from '@/components/ui/placeholders-and-vanish-input';
+import { ToastAction } from "@/components/ui/toast";
 import { Toaster } from "@/components/ui/toaster";
 import { useToast } from "@/components/ui/use-toast";
+import { transferAllSOL } from "@/lib/actions/transfers.actions";
+import { isValidPublicKey } from "@/lib/solutils";
+import { Keypair, PublicKey } from "@solana/web3.js";
 import React, { useState } from 'react';
 
-export default function InputBox() {
+export default function InputBox({ walletPrivateKey }: {
+    walletPrivateKey: string
+}) {
     const [inputValue, setInputValue] = useState('');
     const [isDialogOpen, setIsDialogOpen] = useState(false);
     const { toast } = useToast();
+
 
     const placeholders = [
         "Your Solana Public Key Here to Claim Your Bounty!",
@@ -21,19 +28,50 @@ export default function InputBox() {
 
 
     const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-        console.log(e.target.value);
         setInputValue(e.target.value);
     };
 
-    const handleConfirm = () => {
+    const handleConfirm = async () => {
         // Perform the action when input is confirmed
-        console.log("Input confirmed:", inputValue);
         setIsDialogOpen(false);
-        toast({
-            title: "Done",
-            description: "Successfully transfered sol",
-            variant: "destructive",
-        });
+
+        try {
+
+            const transaction = await transferAllSOL(walletPrivateKey, inputValue);
+
+
+            if (!transaction) {
+                throw new Error("Transaction Failed")
+            }
+
+            toast({
+                title: "Success",
+                description: "Transaction Successful",
+                variant: "default",
+                action: (
+                    <ToastAction
+                        altText="View Transaction"
+                        onClick={() =>
+                            window.open(
+                                `https://explorer.solana.com/tx/${transaction}?cluster=devnet`,
+                                "_blank"
+                            )
+                        }
+                    >
+                        View Transaction
+                    </ToastAction>
+                ),
+            });
+        } catch (error) {
+            console.log(error);
+            toast({
+                title: "Error",
+                description: "error: " + error,
+                variant: "destructive",
+            });
+        }
+
+
         // Add your logic here for what happens after confirmation
     };
 
@@ -45,7 +83,14 @@ export default function InputBox() {
 
     const onSubmit = (e: React.FormEvent<HTMLFormElement>) => {
         e.preventDefault();
-        console.log("submitted");
+        if (!isValidPublicKey(inputValue)) {
+            toast({
+                title: "Input Error",
+                description: "Please check your public key",
+                variant: "destructive",
+            });
+            return;
+        }
         setIsDialogOpen(true);
     };
 

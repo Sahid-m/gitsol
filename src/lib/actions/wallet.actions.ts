@@ -24,8 +24,6 @@ export async function getUserWallet(uid: string) {
 }
 
 export async function getPrBountiesDetails(token: string, sub: string) {
-  console.log("befor getting data");
-
   try {
     const data = await db.prBounties.findFirst({
       where: {
@@ -33,8 +31,6 @@ export async function getPrBountiesDetails(token: string, sub: string) {
         winnerSub: sub,
       },
     });
-
-    console.log("after getting data");
 
     return data;
   } catch (e) {
