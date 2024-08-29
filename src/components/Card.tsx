@@ -1,8 +1,8 @@
 "use client";
 
 import { useToast } from "@/components/ui/use-toast";
-import { addFunds, TransferSol as withdrawFunds } from "@/lib/actions/transfers.actions";
-import { getSolBalanaceInUSD } from "@/lib/solutils";
+import { TransferSol as withdrawFunds } from "@/lib/actions/transfers.actions";
+import { addFunds, getSolBalanaceInUSD } from "@/lib/solutils";
 import { useConnection, useWallet } from "@solana/wallet-adapter-react";
 import { WalletMultiButton } from "@solana/wallet-adapter-react-ui";
 import * as web3 from "@solana/web3.js";

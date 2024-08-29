@@ -3,6 +3,8 @@ import {
   Connection,
   LAMPORTS_PER_SOL,
   PublicKey,
+  SystemProgram,
+  Transaction,
   TransactionResponse,
 } from "@solana/web3.js";
 
@@ -58,5 +60,36 @@ export function isValidPublicKey(inputValue: string): boolean {
     return true;
   } catch (error) {
     return false;
+  }
+}
+
+export async function addFunds(
+  fromPublicKey: PublicKey,
+  toPublicKey: PublicKey,
+  amount: number,
+  sendTransaction: (
+    transaction: Transaction,
+    connection: Connection
+  ) => Promise<string>
+): Promise<string> {
+  const transaction = new Transaction();
+  const instruction = SystemProgram.transfer({
+    fromPubkey: fromPublicKey,
+    lamports: amount * LAMPORTS_PER_SOL,
+    toPubkey: toPublicKey,
+  });
+
+  transaction.add(instruction);
+
+  try {
+    const signature = await sendTransaction(transaction, connection);
+    return signature;
+  } catch (error) {
+    console.error("Transaction Error:", error);
+    if (error instanceof Error) {
+      throw new Error(error.message);
+    } else {
+      throw new Error("An unknown error occurred");
+    }
   }
 }
