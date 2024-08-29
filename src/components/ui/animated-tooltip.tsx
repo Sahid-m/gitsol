@@ -41,7 +41,7 @@ export const AnimatedTooltip = ({
     <>
       {items.map((item, idx) => (
         <div
-          className={`${items.length == 1 ? `-ml-3` : `-ml-3`}  relative group overflow-visible`}
+          className={`${items.length == 1 ? `-mr-3` : `-mr-3`}  relative group overflow-visible`}
           key={item.name}
           onMouseEnter={() => setHoveredIndex(item.id)}
           onMouseLeave={() => setHoveredIndex(null)}

@@ -13,6 +13,7 @@ import { addFunds, getSolBalanaceInUSD } from "@/lib/solutils";
 import { useConnection, useWallet } from "@solana/wallet-adapter-react";
 import { WalletMultiButton } from "@solana/wallet-adapter-react-ui";
 import * as web3 from "@solana/web3.js";
+import dynamic from "next/dynamic";
 import Image from "next/image";
 import React, { useCallback, useEffect, useState } from "react";
 
@@ -43,6 +44,11 @@ export function WalletCard3D({
   const [isDialogOpen, setIsDialogOpen] = useState(false);
   const [walletBalance, setWalletBalance] = useState(0.0);
   const [internalWalletBalance, setInternalWalletBalance] = useState(0.0);
+
+  const WalletMultiButtonDynamic = dynamic(
+    async () => (await import('@solana/wallet-adapter-react-ui')).WalletMultiButton,
+    { ssr: false }
+  );
 
   useEffect(() => {
     const timeout = setTimeout(() => setCopied(false), 2000);
@@ -210,7 +216,7 @@ export function WalletCard3D({
             </CardItem>
           </div>
           <CardItem translateZ={90} className="w-full justify-center flex py-5">
-            <WalletMultiButton className="phantom-wallet-btn" />
+            <WalletMultiButtonDynamic />
           </CardItem>
 
           <Dialog open={isDialogOpen} onOpenChange={setIsDialogOpen}>

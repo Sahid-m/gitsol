@@ -44,12 +44,15 @@ export async function getAllUserBounties(uid: string) {
             name: true,
             profileImg: true,
             totalBountyWon: true,
+            id: true,
           },
         },
       },
       where: {
-        completed: false,
         ownerId: uid,
+      },
+      orderBy: {
+        completed: "desc",
       },
     });
     return bounties;

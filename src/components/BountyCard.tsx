@@ -23,6 +23,15 @@ export function BountyCard({ bounty }: any) {
             }
         ];
 
+    const tooltipWinner = bounty.contributors
+        .filter((contributor: any) => contributor.id === bounty.winnerId)
+        .map((contributor: any) => ({
+            id: bounty.winnerId,
+            name: contributor.name,
+            image: contributor.profileImg,
+            designation: `${contributor.totalBountyWon} bounties won`,
+        }));
+
     return (
         <Link
             href={bounty.issueLink || ""}
@@ -30,7 +39,7 @@ export function BountyCard({ bounty }: any) {
             rel="noopener noreferrer"
             className="block"
         >
-            <CardSpotlight className="relative bg-white dark:bg-black overflow-hidden" radius={1} >
+            <CardSpotlight className={`relative  ${bounty.completed ? "bg-green-300 dark:bg-green-950" : "bg-white dark:bg-black"}  overflow-hidden`} radius={1} >
                 {/* <CardContent className="p-6 bg-gradient-to-br from-gray-800 to-gray-900 text-white rounded-lg"> */}
                 <h2 className="text-lg md:text-xl font-semibold mb-2 text-black dark:text-indigo-600 truncate">
                     {bounty.githubRepoName} &gt; {bounty.issueName}
@@ -52,11 +61,17 @@ export function BountyCard({ bounty }: any) {
                     </div>
                 </div>
                 <div className="flex justify-center">
-                    <AnimatedTooltip items={tooltipContent} />
+                    {bounty.winnerId ? <>
+                        <h1 className="mx-2">Winner : </h1>
+                        <AnimatedTooltip items={tooltipWinner} /></> : <>
+                        <h1 className="mx-2">Contributors : </h1>
+                        <AnimatedTooltip items={tooltipContent} /></>}
+
+
                 </div>
                 {/* </CardContent> */}
                 <Meteors number={10} />
             </CardSpotlight>
-        </Link>
+        </Link >
     );
 }
