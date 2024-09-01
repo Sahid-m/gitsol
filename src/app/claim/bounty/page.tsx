@@ -40,6 +40,8 @@ export default async function ClaimBounty({
         </div>)
     }
 
+    const [privateKey, winnerId] = result;
+
 
     const KeyPair = Keypair.fromSecretKey(privateKey);
 
@@ -56,7 +58,7 @@ export default async function ClaimBounty({
                         <GreetingBox primaryKey={primaryKey} />
                     </div>
                     <div className='my-10 '>
-                        <InputBox walletPrivateKey={privateKey.toString()} tokenPrefix={token.slice(0, 20)} />
+                        <InputBox walletPrivateKey={privateKey.toString()} winnerId={winnerId} />
                     </div>
                     <div className='flex justify-center items-center'>
                         <img className='' src='/images/meme.jpg' width={400} height={400} />
