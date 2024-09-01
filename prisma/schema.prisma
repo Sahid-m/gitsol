@@ -31,17 +31,18 @@ model SolWallet {
 }
 
 model Bounties {
-  id                   String        @id @default(uuid())
-  bountyAmount         String
-  issueName            String
-  ownerId              String
-  issueNumber          String
-  issueId              String
-  issueDescription     String        @default("")
-  completed            Boolean
-  githubRepo           String
-  githubRepoName       String        @default("")
-  winnerId             String?       @default("")
+  id               String        @id @default(uuid())
+  bountyAmount     String
+  issueName        String
+  ownerId          String
+  issueNumber      String
+  issueId          String
+  issueDescription String        @default("")
+  completed        Boolean
+  githubRepoId     String
+  githubRepoName   String        @default("")
+  Winner           BountyWinner?
+
   owner                User          @relation(fields: [ownerId], references: [id])
   contributors         Contributor[] @relation("BountyContributors")
   issueLink            String?       @default("")
@@ -49,15 +50,14 @@ model Bounties {
 }
 
 model Contributor {
-  id             String     @id @default(uuid())
+  id             String         @id @default(uuid())
   name           String
   profileImg     String
   email          String?
-  sub            String     @unique
-  totalBountyWon String     @default("0")
-  solPublicKey   String
-  bountiesWonId  String[]   @default([])
-  bounties       Bounties[] @relation("BountyContributors")
+  sub            String         @unique
+  totalBountyWon String         @default("0")
+  bountyWinner   BountyWinner[]
+  bounties       Bounties[]     @relation("BountyContributors")
 }
 
 model PrBounties {
@@ -70,4 +70,30 @@ model PrBounties {
   prLink           String
   winnerSub        String
   walletPrivateKey String
+}
+
+enum Status {
+  PAID
+  PENDING
+}
+
+model BountyWinner {
+  id                    String       @id @default(uuid())
+  bountyAmount          String
+  bountyId              String?      @unique
+  Bounty                Bounties?    @relation(fields: [bountyId], references: [id])
+  prNumber              String
+  prLink                String
+  name                  String
+  winnerSub             String
+  contributorId         String?      @unique
+  contributor           Contributor? @relation(fields: [contributorId], references: [id])
+  tokenPrefix           String
+  profileImg            String
+  walletPrivateKeyShard String
+  walletPublicKey       String
+  status                Status       @default(PAID)
+  claimedAt             DateTime?
+  encryptionKey         String
+  encryptionIv          String
 }

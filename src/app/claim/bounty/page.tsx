@@ -2,7 +2,7 @@
 import Card from '@/components/Card';
 import { Cover } from '@/components/ui/cover';
 import { PlaceholdersAndVanishInput } from '@/components/ui/placeholders-and-vanish-input';
-import { getPrBountiesDetails } from '@/lib/actions/wallet.actions';
+import { getPrBountiesDetails, getWinnerBountyWalletDetails } from '@/lib/actions/wallet.actions';
 import { getCurrentUser } from '@/lib/session';
 import { Keypair } from '@solana/web3.js';
 import { redirect } from 'next/navigation';
@@ -31,16 +31,17 @@ export default async function ClaimBounty({
         </div>)
     }
 
-    const data = await getPrBountiesDetails(token, user.sub);
+    // const data = await getPrBountiesDetails(token, user.sub);
+    const privateKey = await getWinnerBountyWalletDetails(token, user.sub);
 
-    if (!data) {
+    if (!privateKey) {
         return (<div className='h-screen flex justify-center items-center'>
             WRONG TOKEN
         </div>)
     }
 
 
-    const KeyPair = Keypair.fromSecretKey(Uint8Array.from(data.walletPrivateKey.split(",").map(Number)))
+    const KeyPair = Keypair.fromSecretKey(privateKey);
 
     const primaryKey = KeyPair.publicKey.toBase58();
 
@@ -55,7 +56,7 @@ export default async function ClaimBounty({
                         <GreetingBox primaryKey={primaryKey} />
                     </div>
                     <div className='my-10 '>
-                        <InputBox walletPrivateKey={data.walletPrivateKey} />
+                        <InputBox walletPrivateKey={privateKey.toString()} />
                     </div>
                     <div className='flex justify-center items-center'>
                         <img className='' src='/images/meme.jpg' width={400} height={400} />

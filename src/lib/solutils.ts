@@ -7,6 +7,7 @@ import {
   Transaction,
   TransactionResponse,
 } from "@solana/web3.js";
+import crypto from "crypto";
 
 export const connection = new Connection(clusterApiUrl("devnet"), "confirmed");
 
@@ -92,4 +93,41 @@ export async function addFunds(
       throw new Error("An unknown error occurred");
     }
   }
+}
+
+export function stringToUInt8Array(input: string) {
+  try {
+    const data = Uint8Array.from(input.split(",").map(Number));
+    return data;
+  } catch (e) {
+    console.log("error converting to Uint8Arry : " + e);
+    return null;
+  }
+}
+
+export function decryptStrings(
+  encryptedData: string,
+  key: string,
+  iv: string
+): [string, string] {
+  // Create decipher
+  console.log("in decrypt string start");
+  const decipher = crypto.createDecipheriv(
+    "aes-256-cbc",
+    Buffer.from(key, "hex"),
+    Buffer.from(iv, "hex")
+  );
+  console.log("created deciper");
+  console.log("encrypted key : " + key);
+  console.log("iv: " + iv);
+
+  // Decrypt the data
+  let decrypted = decipher.update(encryptedData, "hex", "utf8");
+  decrypted += decipher.final("utf8");
+
+  console.log("decrypted");
+  // Split the decrypted string back into two strings
+  const [str1, str2] = decrypted.split("|");
+
+  return [str1, str2];
 }

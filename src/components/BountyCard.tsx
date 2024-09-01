@@ -1,4 +1,5 @@
 import Link from "next/link";
+import MarkdownRenderer from "./ReactMarkdownRenderer";
 import { AnimatedTooltip } from "./ui/animated-tooltip";
 import { Badge } from "./ui/badge";
 import { CardSpotlight } from "./ui/card-spotlight";
@@ -44,7 +45,12 @@ export function BountyCard({ bounty }: any) {
                 <h2 className="text-lg md:text-xl font-semibold mb-2 text-black dark:text-indigo-600 truncate">
                     {bounty.githubRepoName} &gt; {bounty.issueName}
                 </h2>
-                <p className="text-sm text-neutral-800 dark:text-gray-300 line-clamp-2">{bounty.issueDescription}</p>
+                {/* <p className="text-sm text-neutral-800 dark:text-gray-300 line-clamp-2">{bounty.issueDescription}</p> */}
+                <MarkdownRenderer
+                    content={bounty.issueDescription}
+                    className="text-sm text-neutral-800 dark:text-gray-300"
+                    maxLines={4}
+                />
                 <div className="mt-3 flex justify-between items-center">
                     <span className="text-lg md:text-xl font-bold text-green-500 dark:text-green-400">
                         ${bounty.bountyAmount}

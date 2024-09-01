@@ -55,6 +55,7 @@ export async function getAllUserBounties(uid: string) {
         completed: "desc",
       },
     });
+
     return bounties;
   } catch (error) {
     console.error("Error fetching bounties:", error);
