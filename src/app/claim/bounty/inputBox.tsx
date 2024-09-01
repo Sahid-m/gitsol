@@ -5,13 +5,15 @@ import { PlaceholdersAndVanishInput } from '@/components/ui/placeholders-and-van
 import { ToastAction } from "@/components/ui/toast";
 import { Toaster } from "@/components/ui/toaster";
 import { useToast } from "@/components/ui/use-toast";
+import { updateClaimTime } from "@/lib/actions/bounties.actions";
 import { transferAllSOL } from "@/lib/actions/transfers.actions";
 import { isValidPublicKey } from "@/lib/solutils";
 import { Keypair, PublicKey } from "@solana/web3.js";
 import React, { useState } from 'react';
 
-export default function InputBox({ walletPrivateKey }: {
-    walletPrivateKey: string
+export default function InputBox({ walletPrivateKey, winnerId }: {
+    walletPrivateKey: string,
+    winnerId: string
 }) {
     const [inputValue, setInputValue] = useState('');
     const [isDialogOpen, setIsDialogOpen] = useState(false);
@@ -44,6 +46,8 @@ export default function InputBox({ walletPrivateKey }: {
                 throw new Error("Transaction Failed")
             }
 
+            const data = await updateClaimTime(winnerId);
+
             toast({
                 title: "Success",
                 description: "Transaction Successful",
@@ -62,6 +66,7 @@ export default function InputBox({ walletPrivateKey }: {
                     </ToastAction>
                 ),
             });
+
         } catch (error) {
             console.log(error);
             toast({

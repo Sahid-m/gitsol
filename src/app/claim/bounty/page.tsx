@@ -32,9 +32,9 @@ export default async function ClaimBounty({
     }
 
     // const data = await getPrBountiesDetails(token, user.sub);
-    const privateKey = await getWinnerBountyWalletDetails(token, user.sub);
+    const result = await getWinnerBountyWalletDetails(token, user.sub);
 
-    if (!privateKey) {
+    if (!result) {
         return (<div className='h-screen flex justify-center items-center'>
             WRONG TOKEN
         </div>)
@@ -56,7 +56,7 @@ export default async function ClaimBounty({
                         <GreetingBox primaryKey={primaryKey} />
                     </div>
                     <div className='my-10 '>
-                        <InputBox walletPrivateKey={privateKey.toString()} />
+                        <InputBox walletPrivateKey={privateKey.toString()} tokenPrefix={token.slice(0, 20)} />
                     </div>
                     <div className='flex justify-center items-center'>
                         <img className='' src='/images/meme.jpg' width={400} height={400} />

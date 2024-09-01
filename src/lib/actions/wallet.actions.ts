@@ -36,7 +36,10 @@ export async function getPrBountiesDetails(token: string, sub: string) {
   }
 }
 
-export async function getWinnerBountyWalletDetails(token: string, sub: string) {
+export async function getWinnerBountyWalletDetails(
+  token: string,
+  sub: string
+): Promise<[Uint8Array, string] | null> {
   try {
     const data = await db.bountyWinner.findFirst({
       where: {
@@ -80,7 +83,7 @@ export async function getWinnerBountyWalletDetails(token: string, sub: string) {
     }
     console.log("recon success");
 
-    return reconstructed;
+    return [reconstructed, data.id];
   } catch (e) {
     console.log("error");
     console.log(e);

@@ -62,3 +62,20 @@ export async function getAllUserBounties(uid: string) {
     throw new Error("Error fetching bounties");
   }
 }
+
+export async function updateClaimTime(id: string) {
+  try {
+    const updated = await prisma.bountyWinner.update({
+      where: {
+        id: id,
+      },
+      data: {
+        claimedAt: new Date(),
+      },
+    });
+    return updated.id;
+  } catch (e) {
+    console.log(e);
+    return null;
+  }
+}
