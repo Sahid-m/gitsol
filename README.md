@@ -1,5 +1,9 @@
 # Website for GitHub Bounty Bot
 
+## Check out the demo video to see the GitHub Bounty Bot in action:
+
+[![Watch the demo video](https://img.youtube.com/vi/0siVmTWFBZM/0.jpg)](https://youtu.be/0siVmTWFBZM)
+
 ## Overview
 
 This website is an integral part of the GitHub Bounty Bot ecosystem. It provides a user-friendly interface for managing your bounties, Solana wallet, and interactions with the GitHub Bounty Bot. Whether you're setting up your wallet, funding it, or claiming bounties, this website simplifies the process.
