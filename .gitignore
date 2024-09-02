@@ -6,7 +6,7 @@
 .pnp.js
 .yarn/install-state.gz
 .env
-.env*
+.env
 
 
 
@@ -20,8 +20,6 @@
 # production
 /build
 
-
-.env.example
 .env.local
 .env.staging
 
