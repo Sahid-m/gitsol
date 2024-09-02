@@ -1,8 +1,5 @@
-
-import Card from '@/components/Card';
-import { Cover } from '@/components/ui/cover';
-import { PlaceholdersAndVanishInput } from '@/components/ui/placeholders-and-vanish-input';
-import { getPrBountiesDetails, getWinnerBountyWalletDetails } from '@/lib/actions/wallet.actions';
+import { GlareCard } from '@/components/ui/glare-card';
+import { getWinnerBountyWalletDetails } from '@/lib/actions/wallet.actions';
 import { getCurrentUser } from '@/lib/session';
 import { Keypair } from '@solana/web3.js';
 import { redirect } from 'next/navigation';
@@ -26,8 +23,10 @@ export default async function ClaimBounty({
     const token = searchParams.token;
 
     if (!token) {
-        return (<div className='h-screen flex justify-center items-center'>
-            WRONG LINK SER
+        return (<div className='h-[90vh] flex justify-center items-center'>
+            <GlareCard className="flex flex-col items-center justify-center">
+                <p className="text-black dark:text-white font-bold text-xl mt-4">Wrong Link</p>
+            </GlareCard>
         </div>)
     }
 
@@ -35,8 +34,11 @@ export default async function ClaimBounty({
     const result = await getWinnerBountyWalletDetails(token, user.sub);
 
     if (!result) {
-        return (<div className='h-screen flex justify-center items-center'>
-            WRONG TOKEN
+        return (<div className='h-[90vh] flex justify-center items-center'>
+
+            <GlareCard className="flex flex-col items-center justify-center">
+                <p className="text-black dark:text-white font-bold text-xl mt-4">Unkown Token!</p>
+            </GlareCard>
         </div>)
     }
 
@@ -61,7 +63,7 @@ export default async function ClaimBounty({
                         <InputBox walletPrivateKey={privateKey.toString()} winnerId={winnerId} />
                     </div>
                     <div className='flex justify-center items-center'>
-                        <img className='' src='/images/meme.jpg' width={400} height={400} />
+                        <img alt='meme' src='/images/meme.jpg' width={400} height={400} />
                     </div>
                 </div>
 
