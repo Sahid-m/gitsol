@@ -13,12 +13,6 @@
 1. Allows User to sign up using github
 2. generates an solana wallet and saves it in db
 3. now user can add some funds in wallet and get started using github bot
-
-## Tasks:
-
-- [x] Add "Add funds button to wallet"
-- [x] Add Remove Funds wallet
-- [ ] make an simple landing page
-- [ ] make an dashboard page where user can see bounties alloted
-- [ ] Improve Wallet Page UI
-- [ ] Make an How to add Gitub bot page ( when github bot is finished )
+4. See onGoing Bounties
+5. See your all bounties ( completed + non completed )
+6. claim your bounties using link based wallet
